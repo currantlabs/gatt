@@ -251,7 +251,12 @@ func valueToXpc(val r.Value) C.xpc_object_t {
 			xv = C.xpc_uuid_create(C.ptr_to_uuid(unsafe.Pointer(&uuid[0])))
 		} else if val.Type() == TYPE_OF_BYTES {
 			// slice of bytes
-			xv = C.xpc_data_create(unsafe.Pointer(val.Pointer()), C.size_t(val.Len()))
+			if val.Len() > 0 {
+				v := val.Interface().([]byte)
+				xv = C.xpc_data_create(unsafe.Pointer(&v[0]), C.size_t(val.Len()))
+			} else {
+				xv = C.xpc_data_create(nil, C.size_t(0))
+			}
 		} else {
 			xv = C.xpc_array_create(nil, 0)
 			l := val.Len()
