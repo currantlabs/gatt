@@ -156,5 +156,8 @@ func generateDescAttributes(d *Descriptor, h uint16) attr {
 		props: d.props,
 		pvt:   d,
 	}
+	if len(d.valuestr) > 0 {
+		a.value = []byte(d.valuestr)
+	}
 	return a
 }

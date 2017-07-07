@@ -315,8 +315,9 @@ type Descriptor struct {
 	props  Property // enabled properties
 	secure Property // security enabled properties
 
-	h     uint16
-	value []byte
+	h        uint16
+	value    []byte
+	valuestr string
 
 	rhandler ReadHandler
 	whandler WriteHandler
@@ -365,6 +366,18 @@ func (d *Descriptor) SetValue(b []byte) {
 	// d.secure |= CharRead
 	d.value = make([]byte, len(b))
 	copy(d.value, b)
+}
+
+// SetStringValue makes the descriptor support read requests, and returns a static value.
+// SetStringValue must be called before the containing service is added to a server.
+// SetStringValue panics if the descriptor has already configured with a ReadHandler.
+func (d *Descriptor) SetStringValue(s string) {
+	if d.rhandler != nil {
+		panic("descriptor has been configured with a read handler")
+	}
+	d.props |= CharRead
+	// d.secure |= CharRead
+	d.valuestr = s
 }
 
 // HandleRead makes the descriptor support read requests, and routes read requests to h.

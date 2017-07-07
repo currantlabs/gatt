@@ -226,8 +226,14 @@ func (d *device) AddService(s *Service) error {
 				// skip CCCD
 				continue
 			}
+			var v interface{}
+			if len(d.valuestr) > 0 {
+				v = d.valuestr
+			} else {
+				v = d.value
+			}
 			xd := xpc.Dict{
-				"kCBMsgArgData": d.value,
+				"kCBMsgArgData": v,
 				"kCBMsgArgUUID": reverse(d.uuid.b),
 			}
 			xds = append(xds, xd)
